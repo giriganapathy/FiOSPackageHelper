@@ -94,9 +94,9 @@ dialog.on("intent.channel", [
                                     msg = msg + "<tr><td>Description" + "</td><td>" + channelAndPackageInfo["desc"] + "</td></tr>";    
                                     msg = msg + "<tr><td>Packages" + "</td><td>" + channelAndPackageInfo["packages"].toString() + "</td></tr>";    */
 
-                                    msg1 = msg1 + "Channel" + "|" + channelAndPackageInfo["channel"] + "\n";
-                                    msg1 = msg1 + "Description" + "|" + channelAndPackageInfo["desc"] + "\n";
-                                    msg1 = msg1 + "Packages" + "|" + channelAndPackageInfo["packages"].toString() + "\n";
+                                    msg1 = msg1 + "Channel" + " | " + channelAndPackageInfo["channel"] + "\n";
+                                    msg1 = msg1 + "Description" + " | " + channelAndPackageInfo["desc"] + "\n";
+                                    msg1 = msg1 + "Packages" + " | " + channelAndPackageInfo["packages"].toString() + "\n";
 
                                 }
                                 //msg = msg + "</tbody></table>";
