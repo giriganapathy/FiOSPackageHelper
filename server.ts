@@ -84,16 +84,22 @@ dialog.on("intent.channel", [
                             if (null != channelFoundInOtherPackages && channelFoundInOtherPackages.length > 0) {
                                 //Say the channel what your asking is not available in your selected package, but it is available in other packages"
                                 msg = "The channel what you asked is not available in your selected package [ " + session.userData.selectedPackageName + " ], but it is available in other packages:\n";
-                                msg = msg + "<table><thead/><tbody>";
-                                msg = msg + "<tr><td>Field</td><td>Information</td></tr>";
-                                //msg = msg + "------------ | -------------\n";
+                                //msg = msg + "<table><thead/><tbody>";
+                                //msg = msg + "<tr><td>Field</td><td>Information</td></tr>";
+                                msg = msg + "Field | Information \n";
+                                msg = msg + "------------ | -------------\n";
                                 for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
                                     channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
-                                    msg = msg + "<tr><td>Channel" + "</td><td>" + channelAndPackageInfo["channel"] + "</td></tr>\n";    
+                                    /*msg = msg + "<tr><td>Channel" + "</td><td>" + channelAndPackageInfo["channel"] + "</td></tr>\n";    
                                     msg = msg + "<tr><td>Description" + "</td><td>" + channelAndPackageInfo["desc"] + "</td></tr>";    
-                                    msg = msg + "<tr><td>Packages" + "</td><td>" + channelAndPackageInfo["packages"].toString() + "</td></tr>";    
+                                    msg = msg + "<tr><td>Packages" + "</td><td>" + channelAndPackageInfo["packages"].toString() + "</td></tr>";    */
+
+                                    msg = msg + "Channel" + "|" + channelAndPackageInfo["channel"] + "\n";    
+                                    msg = msg + "Description" + "|" + channelAndPackageInfo["desc"] + "\n";    
+                                    msg = msg + "Packages" + "|" + channelAndPackageInfo["packages"].toString() + "\n";    
+
                                 }
-                                msg = msg + "</tbody></table>";
+                                //msg = msg + "</tbody></table>";
                             }
                         }
                         session.send(msg);
