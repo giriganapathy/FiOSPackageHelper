@@ -27,7 +27,9 @@ dialog.on("intent.channel", [
                 session.userData.channelName = channelName;
                 var channelNameSize = channelName.length;
                 if (null != channelsAndPackageMap) {
+                    //session.send("Map Size:" + channelsAndPackageMap.
                     var matchedChannelArr = [];
+                    session.send("debug:" + channelsAndPackageMap["Zee TV"].description);
                     for (var key in channelsAndPackageMap) {
                         var searchString = "";
                         var sourceString = "";
@@ -40,7 +42,7 @@ dialog.on("intent.channel", [
                             searchString = key.toLowerCase();
                             sourceString = channelName.toLowerCase();
                         }
-
+                        
                         if (sourceString == searchString) {
                             matchedChannelArr.push(key);
                         }
