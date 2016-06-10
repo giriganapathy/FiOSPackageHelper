@@ -7,10 +7,7 @@ preferred channels and FiOS TV packages.
 -----------------------------------------------------------------------------*/
 var restify = require("restify");
 var builder = require("botbuilder");
-var channelAndPackageMap = {};
-channelAndPackageMap["A Wealth of Entertainment"] = {};
-channelAndPackageMap["A Wealth of Entertainment"]["description"] = "AWE - A Wealth of Entertainment - is devoted to taking viewers on a journey of how wealth is achieved, used and enjoyed. With engaging programming that connects with a high profile audience, AWE has broad appeal across age and income demographics";
-channelAndPackageMap["A Wealth of Entertainment"]["packages"] = ["Custom TV Sports & More", "Preferred HD", "Extreme HD", "Ultimate HD"];
+var channelsAndPackageMap = require('./channelandpackage');
 var model = process.env.model || "https://api.projectoxford.ai/luis/v1/application?id=573c0d0c-060c-4549-8ef5-650218618c08&subscription-key=b27a7109bc1046fb9cc7cfa874e3f819&q=";
 var dialog = new builder.LuisDialog(model);
 var bot = new builder.BotConnectorBot(); //new builder.TextBot();
@@ -25,9 +22,11 @@ dialog.on("intent.channel", [
             if (null != channelName) {
                 session.userData.channelName = channelName;
                 var channelNameSize = channelName.length;
-                if (null != channelAndPackageMap) {
+                if (null != channelsAndPackageMap) {
+                    //session.send("Map Size:" + channelsAndPackageMap.
                     var matchedChannelArr = [];
-                    for (var key in channelAndPackageMap) {
+                    //session.send("debug:" + channelsAndPackageMap["Zee TV"].description);
+                    for (var key in channelsAndPackageMap) {
                         var searchString = "";
                         var sourceString = "";
                         var keySize = key.length;
@@ -58,7 +57,7 @@ dialog.on("intent.channel", [
                         var length = matchedChannelArr.length;
                         for (var idx = 0; idx < length; idx++) {
                             channelNameInfo = matchedChannelArr[idx];
-                            var channelObj = channelAndPackageMap[channelNameInfo];
+                            var channelObj = channelsAndPackageMap[channelNameInfo];
                             packages = channelObj.packages;
                             if (null != packages && packages.length > 0) {
                                 for (var pkgIdx = 0; pkgIdx < packages.length; pkgIdx++) {
@@ -66,25 +65,30 @@ dialog.on("intent.channel", [
                                     if (packageNameInfo == session.userData.selectedPackageName) {
                                         alreadyAvailableInSelectedPackageFlag = true;
                                     }
-                                    else {
-                                        channelFoundInOtherPackages.push(packageNameInfo);
-                                    }
                                 }
+                                channelFoundInOtherPackages.push({ "channel": channelNameInfo, "desc": channelObj.description, "packages": packages });
                             }
                         }
                         var msg = "";
                         if (alreadyAvailableInSelectedPackageFlag) {
                             //Say the channel what you are asking is already available in your selected package.
-                            msg = "The channel what you are asking is already available in your selected package";
+                            msg = "The channel you asked is already available in your selected package [ " + session.userData.selectedPackageName + " ]";
                         }
                         else {
+                            var channelAndPackageInfo = {};
                             if (null != channelFoundInOtherPackages && channelFoundInOtherPackages.length > 0) {
                                 //Say the channel what your asking is not available in your selected package, but it is available in other packages"
-                                msg = "The channel what you are asking is not available in your selected package, but it is available in other packages:\n";
+                                msg = "The channel what you asked is not available in your selected package [ " + session.userData.selectedPackageName + " ], but it is available in other packages:\n";
+                                msg = msg + "<table><thead/><tbody>";
+                                msg = msg + "<tr><td>Field</td><td>Information</td></tr>";
+                                //msg = msg + "------------ | -------------\n";
                                 for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
-                                    packageNameInfo = channelFoundInOtherPackages[cfpIdx];
-                                    msg = msg + cfpIdx + "." + packageNameInfo;
+                                    channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
+                                    msg = msg + "<tr><td>Channel" + "</td><td>" + channelAndPackageInfo["channel"] + "</td></tr>\n";
+                                    msg = msg + "<tr><td>Description" + "</td><td>" + channelAndPackageInfo["desc"] + "</td></tr>";
+                                    msg = msg + "<tr><td>Packages" + "</td><td>" + channelAndPackageInfo["packages"].toString() + "</td></tr>";
                                 }
+                                msg = msg + "</tbody></table>";
                             }
                         }
                         session.send(msg);
