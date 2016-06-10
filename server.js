@@ -81,20 +81,20 @@ dialog.on("intent.channel", [
                                 msg = "The channel what you asked is not available in your selected package [ " + session.userData.selectedPackageName + " ], but it is available in other packages:\n";
                                 //msg = msg + "<table><thead/><tbody>";
                                 //msg = msg + "<tr><td>Field</td><td>Information</td></tr>";
-                                msg = msg + "Field | Information \n";
-                                msg = msg + "------------ | -------------\n";
+                                var msg1 = "Field | Information\n";
+                                msg1 = msg1 + "------------ | -------------\n";
                                 for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
                                     channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
                                     /*msg = msg + "<tr><td>Channel" + "</td><td>" + channelAndPackageInfo["channel"] + "</td></tr>\n";
                                     msg = msg + "<tr><td>Description" + "</td><td>" + channelAndPackageInfo["desc"] + "</td></tr>";
                                     msg = msg + "<tr><td>Packages" + "</td><td>" + channelAndPackageInfo["packages"].toString() + "</td></tr>";    */
-                                    msg = msg + "Channel" + "|" + channelAndPackageInfo["channel"] + "\n";
-                                    msg = msg + "Description" + "|" + channelAndPackageInfo["desc"] + "\n";
-                                    msg = msg + "Packages" + "|" + channelAndPackageInfo["packages"].toString() + "\n";
+                                    msg1 = msg1 + "Channel" + "|" + channelAndPackageInfo["channel"] + "\n";
+                                    msg1 = msg1 + "Description" + "|" + channelAndPackageInfo["desc"] + "\n";
+                                    msg1 = msg1 + "Packages" + "|" + channelAndPackageInfo["packages"].toString() + "\n";
                                 }
                             }
                         }
-                        session.send(msg);
+                        session.send(msg + msg1);
                     }
                     else {
                         //say sorry.
