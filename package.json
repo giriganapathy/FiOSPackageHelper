@@ -1,0 +1,14 @@
+{
+  "name": "fi-oshelper-app",
+  "version": "0.0.0",
+  "description": "FiOSHelperApp",
+  "main": "app.js",
+  "author": {
+    "name": "Karthi",
+    "email": ""
+  },
+  "dependencies": {
+    "botbuilder": "^1.0.1",
+    "restify": "^4.1.0"
+  }
+}

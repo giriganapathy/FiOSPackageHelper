@@ -1,0 +1,1 @@
+C:\girig\FiOSHelperApp\FiOSHelperApp\bin\Microsoft.NodejsTools.WebRole.dll
