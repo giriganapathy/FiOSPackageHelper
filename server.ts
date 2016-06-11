@@ -8,6 +8,13 @@ preferred channels and FiOS TV packages.
 var restify = require("restify");
 var builder = require("botbuilder");
 var channelsAndPackageMap = require('./channelandpackage');
+var fiosTVPackages = {
+    "custom_tv_essentials": "Custom TV - Essentials",
+    "custom_tv_sports_more": "Custom TV - Sports & More",
+    "preferred_hd": "Preferred HD",
+    "extreme_hd": "Extreme HD",
+    "ultimate_hd": "Ultimate HD"
+};
 
 var model = process.env.model || "https://api.projectoxford.ai/luis/v1/application?id=573c0d0c-060c-4549-8ef5-650218618c08&subscription-key=b27a7109bc1046fb9cc7cfa874e3f819&q=";
 var dialog = new builder.LuisDialog(model);
@@ -16,6 +23,23 @@ var bot = new builder.BotConnectorBot(); //new builder.TextBot();
 bot.add("/", dialog);
 
 dialog.onDefault(builder.DialogAction.send("I'm sorry. I didn't understand."));
+
+dialog.on("intent-change-tv-package", [
+    function (session, args) {
+        session.userData.selectedPackageName = "Custom TV Essentials";
+        //session.send("From:" + session.message.from.channelId);
+        var entity = builder.EntityRecognizer.findEntity(args.entities, 'tv-package-name');
+        if (null != entity) {
+            var tvPackageName = entity.entity;
+            if (null != tvPackageName) {
+                tvPackageName = tvPackageName.replace(/\s+/g, '');
+                session.userData.selectedPackageName = fiosTVPackages[tvPackageName];
+                session.send("FiOS TV Package:" + session.userData.selectedPackageName);
+            }
+        }
+    }
+]);
+
 
 dialog.on("intent.channel", [
     function (session, args) {
