@@ -96,7 +96,7 @@ dialog.on("intent.channel", [
                                     }
                                 }
                                 else if ("directline" == session.message.from.channelId) {
-                                    msg = "The channel what you asked is not available in your selected package [ " + session.userData.selectedPackageName + " ], but it is available in other packages:\n";
+                                    msg = "The channel what you asked is not available in your selected package [ <span class='user-selected-package'>" + session.userData.selectedPackageName + "</span> ], but it is available in other packages:\n\n<br/>";
                                     msg = msg + "<table><thead/><tbody>";
                                     msg = msg + "<tr><td class='cell-field-hdr'>Field</td><td class='cell-info-hdr'>Information</td></tr>";
                                     for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
