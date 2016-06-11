@@ -102,7 +102,7 @@ dialog.on("intent.channel", [
                                 //msg = msg + "</tbody></table>";
                             }
                         }
-                        session.send(msg + msg1);
+                        session.send(msg1);
                     }
                     else {
                         //say sorry.

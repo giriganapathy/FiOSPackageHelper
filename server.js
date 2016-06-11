@@ -94,7 +94,7 @@ dialog.on("intent.channel", [
                                 }
                             }
                         }
-                        session.send(msg + msg1);
+                        session.send(msg1);
                     }
                     else {
                         //say sorry.
