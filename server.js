@@ -16,6 +16,7 @@ dialog.onDefault(builder.DialogAction.send("I'm sorry. I didn't understand."));
 dialog.on("intent.channel", [
     function (session, args) {
         session.userData.selectedPackageName = "Custom TV Essentials";
+        session.send("From:" + session.message.from.channelId);
         var entity = builder.EntityRecognizer.findEntity(args.entities, 'channel-name');
         if (null != entity) {
             var channelName = entity.entity;
@@ -77,20 +78,28 @@ dialog.on("intent.channel", [
                         else {
                             var channelAndPackageInfo = {};
                             if (null != channelFoundInOtherPackages && channelFoundInOtherPackages.length > 0) {
-                                //Say the channel what your asking is not available in your selected package, but it is available in other packages"
-                                msg = "The channel what you asked is not available in your selected package [ " + session.userData.selectedPackageName + " ], but it is available in other packages:\n";
-                                //msg = msg + "<table><thead/><tbody>";
-                                //msg = msg + "<tr><td>Field</td><td>Information</td></tr>";
-                                var msg1 = "Field               | Information                             \n";
-                                msg1 = msg1 + "--------------------| ----------------------------------------\n";
-                                for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
-                                    channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
-                                    /*msg = msg + "<tr><td>Channel" + "</td><td>" + channelAndPackageInfo["channel"] + "</td></tr>\n";
-                                    msg = msg + "<tr><td>Description" + "</td><td>" + channelAndPackageInfo["desc"] + "</td></tr>";
-                                    msg = msg + "<tr><td>Packages" + "</td><td>" + channelAndPackageInfo["packages"].toString() + "</td></tr>";    */
-                                    msg1 = msg1 + "Channel" + " | " + channelAndPackageInfo["channel"] + "\n";
-                                    msg1 = msg1 + "Description" + " | " + channelAndPackageInfo["desc"] + "\n";
-                                    msg1 = msg1 + "Packages" + " | " + channelAndPackageInfo["packages"].toString() + "\n";
+                                if ("directline" != session.message.from.channelId) {
+                                    //Say the channel what your asking is not available in your selected package, but it is available in other packages"
+                                    msg = "The channel what you asked is not available in your selected package [ " + session.userData.selectedPackageName + " ], but it is available in other packages:\n";
+                                    var msg1 = "Field               | Information                             \n";
+                                    msg1 = msg1 + "--------------------| ----------------------------------------\n";
+                                    for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
+                                        channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
+                                        msg1 = msg1 + "Channel" + " | " + channelAndPackageInfo["channel"] + "\n";
+                                        msg1 = msg1 + "Description" + " | " + channelAndPackageInfo["desc"] + "\n";
+                                        msg1 = msg1 + "Packages" + " | " + channelAndPackageInfo["packages"].toString() + "\n";
+                                    }
+                                }
+                                else if ("directline" == session.message.from.channelId) {
+                                    msg = msg + "<table><thead/><tbody>";
+                                    msg = msg + "<tr><td>Field</td><td>Information</td></tr>";
+                                    for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
+                                        channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
+                                        msg = msg + "<tr><td>Channel" + "</td><td>" + channelAndPackageInfo["channel"] + "</td></tr>\n";
+                                        msg = msg + "<tr><td>Description" + "</td><td>" + channelAndPackageInfo["desc"] + "</td></tr>";
+                                        msg = msg + "<tr><td>Packages" + "</td><td>" + channelAndPackageInfo["packages"].toString() + "</td></tr>";
+                                    }
+                                    msg = msg + "</tbody></table>";
                                 }
                             }
                         }
