@@ -92,12 +92,13 @@ dialog.on("intent.channel", [
                                 }
                                 else if ("directline" == session.message.from.channelId) {
                                     msg = msg + "<table><thead/><tbody>";
-                                    msg = msg + "<tr><td>Field</td><td>Information</td></tr>";
+                                    msg = msg + "<tr><td class='cell-field'>Field</td><td class='cell-info'>Information</td></tr>";
                                     for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
                                         channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
-                                        msg = msg + "<tr><td>Channel" + "</td><td>" + channelAndPackageInfo["channel"] + "</td></tr>\n";
-                                        msg = msg + "<tr><td>Description" + "</td><td>" + channelAndPackageInfo["desc"] + "</td></tr>";
-                                        msg = msg + "<tr><td>Packages" + "</td><td>" + channelAndPackageInfo["packages"].toString() + "</td></tr>";
+                                        msg = msg + "<tr><td class='cell-field'>Channel" + "</td><td class='cell-info'>" + channelAndPackageInfo["channel"] + "</td></tr>\n";
+                                        msg = msg + "<tr><td class='cell-field'>Description" + "</td><td class='cell-info'>" + channelAndPackageInfo["desc"] + "</td></tr>";
+                                        msg = msg + "<tr><td class='cell-field'>Packages" + "</td><td class='cell-info'>" + channelAndPackageInfo["packages"].toString() + "</td></tr>";
+                                        msg = msg + "<tr><td class='cell-empty'></td><td class='cell-empty'></td></tr>";
                                     }
                                     msg = msg + "</tbody></table>";
                                 }
