@@ -86,13 +86,13 @@ dialog.on("intent.channel", [
                                 if ("directline" != session.message.from.channelId) {
                                     //Say the channel what your asking is not available in your selected package, but it is available in other packages"
                                     msg = "The channel what you asked is not available in your selected package [ " + session.userData.selectedPackageName + " ], but it is available in other packages:\n";
-                                    var msg1 = "Field               | Information                             \n";
-                                    msg1 = msg1 + "--------------------| ----------------------------------------\n";
+                                    msg = "Field               | Information                             \n";
+                                    msg = msg + "--------------------| ----------------------------------------\n";
                                     for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
                                         channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
-                                        msg1 = msg1 + "Channel" + " | " + channelAndPackageInfo["channel"] + "\n";
-                                        msg1 = msg1 + "Description" + " | " + channelAndPackageInfo["desc"] + "\n";
-                                        msg1 = msg1 + "Packages" + " | " + channelAndPackageInfo["packages"].toString() + "\n";
+                                        msg = msg + "Channel" + " | " + channelAndPackageInfo["channel"] + "\n";
+                                        msg = msg + "Description" + " | " + channelAndPackageInfo["desc"] + "\n";
+                                        msg = msg + "Packages" + " | " + channelAndPackageInfo["packages"].toString() + "\n";
                                     }
                                 }
                                 else if ("directline" == session.message.from.channelId) {
@@ -109,7 +109,7 @@ dialog.on("intent.channel", [
 
                             }
                         }
-                        session.send(msg1);
+                        session.send(msg);
                     }
                     else {
                         //say sorry.
