@@ -81,8 +81,8 @@ dialog.on("intent.channel", [
                                 msg = "The channel what you asked is not available in your selected package [ " + session.userData.selectedPackageName + " ], but it is available in other packages:\n";
                                 //msg = msg + "<table><thead/><tbody>";
                                 //msg = msg + "<tr><td>Field</td><td>Information</td></tr>";
-                                var msg1 = "Field | Information\n";
-                                msg1 = msg1 + "------------ | -------------\n";
+                                var msg1 = "Field               | Information                             \n";
+                                msg1 = msg1 + "--------------------| ----------------------------------------\n";
                                 for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
                                     channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
                                     /*msg = msg + "<tr><td>Channel" + "</td><td>" + channelAndPackageInfo["channel"] + "</td></tr>\n";
