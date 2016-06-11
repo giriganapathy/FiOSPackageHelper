@@ -20,7 +20,7 @@ dialog.onDefault(builder.DialogAction.send("I'm sorry. I didn't understand."));
 dialog.on("intent.channel", [
     function (session, args) {
         session.userData.selectedPackageName = "Custom TV Essentials";
-        session.send("From:" + session.message.from.channelId);
+        //session.send("From:" + session.message.from.channelId);
         var entity = builder.EntityRecognizer.findEntity(args.entities, 'channel-name');
         if (null != entity) {
             var channelName = entity.entity;
