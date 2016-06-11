@@ -26,7 +26,7 @@ dialog.onDefault(builder.DialogAction.send("I'm sorry. I didn't understand."));
 
 dialog.on("intent-change-tv-package", [
     function (session, args) {
-        session.userData.selectedPackageName = "Custom TV Essentials";
+        //session.userData.selectedPackageName = "Custom TV Essentials";
         //session.send("From:" + session.message.from.channelId);
         var entity = builder.EntityRecognizer.findEntity(args.entities, 'tv-package-name');
         if (null != entity) {
@@ -43,7 +43,7 @@ dialog.on("intent-change-tv-package", [
 
 dialog.on("intent.channel", [
     function (session, args) {
-        session.userData.selectedPackageName = "Custom TV Essentials";
+        //session.userData.selectedPackageName = "Custom TV Essentials";
         //session.send("From:" + session.message.from.channelId);
         var entity = builder.EntityRecognizer.findEntity(args.entities, 'channel-name');
         if (null != entity) {
