@@ -30,7 +30,7 @@ dialog.on("intent-change-tv-package", [
             if (null != tvPackageName) {
                 tvPackageName = tvPackageName.replace(/\s+/g, '');
                 session.userData.selectedPackageName = fiosTVPackages[tvPackageName];
-                session.send("FiOS TV Package:" + session.userData.selectedPackageName);
+                session.send("Your current selection: " + session.userData.selectedPackageName);
             }
         }
     }
