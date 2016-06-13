@@ -29,8 +29,10 @@ dialog.on("intent-change-tv-package", [
             var tvPackageName = entity.entity;
             if (null != tvPackageName) {
                 tvPackageName = tvPackageName.replace(/\s+/g, '');
-                session.userData.selectedPackageName = fiosTVPackages[tvPackageName];
-                session.send("Your current selection: " + session.userData.selectedPackageName);
+                if(session.userData.selectedPackageName != fiosTVPackages[tvPackageName]) {
+                    session.userData.selectedPackageName = fiosTVPackages[tvPackageName];
+                    session.send("Your current selection: " + session.userData.selectedPackageName);
+                }
             }
         }
     }
