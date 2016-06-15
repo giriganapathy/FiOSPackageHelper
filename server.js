@@ -201,7 +201,7 @@ bot.add("/", [
                             //msg = msg + "<tr><td class='cell-field-hdr'>Field</td><td class='cell-info-hdr'>Information</td></tr>";
                             for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
                                 channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
-                                msg = msg + "<span class='channel-info-other'>" + channelAndPackageInfo["channel"] + " </span> -  available in [" + channelAndPackageInfo["packages"].toString() + "] Packages.\n\n";
+                                msg = msg + "<span class='channel-info-other'>" + channelAndPackageInfo["channel"] + " </span> -  available in [" + channelAndPackageInfo["packages"].toString() + "] Packages.<br/>";
                                 //msg = msg + "<tr><td class='cell-field'>Channel" + "</td><td class='cell-info'>" + channelAndPackageInfo["channel"] + "</td></tr>\n";
                                 //msg = msg + "<tr><td class='cell-field'>Description" + "</td><td class='cell-info'>" + channelAndPackageInfo["desc"] + "</td></tr>";
                                 //msg = msg + "<tr><td class='cell-field'>Packages" + "</td><td class='cell-info'>" + channelAndPackageInfo["packages"].toString() + "</td></tr>";
@@ -383,3 +383,5 @@ server.post("/api/messages", bot.listen());
 server.listen(process.env.port, function () {
     console.log("%s listening to %s", server.name, server.url);
 });
+
+
