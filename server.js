@@ -7,8 +7,7 @@ preferred channels and FiOS TV packages.
 -----------------------------------------------------------------------------*/
 var restify = require("restify");
 var builder = require("botbuilder");
-
-var globalTunnel = require('global-tunnel');
+//var globalTunnel = require('global-tunnel');
 var channelsAndPackageMap = require('./channelandpackage');
 var fiosTVPackages = {
     "custom_tv_essentials": "Custom TV - Essentials",
