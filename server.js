@@ -39,7 +39,7 @@ var bot = new builder.BotConnectorBot(); //new builder.TextBot();
 bot.add("/", [
     function (session, args, next) {
         if (!session.userData.channelNames) {
-            builder.Prompts.text(session, "Please type the channel name...if you looking for any specific channels?");
+            builder.Prompts.text(session, "Please type the channel name...if you are looking for any specific channels?");
         }
         else {
             next({ "response": session.message.text });
@@ -212,6 +212,7 @@ bot.add("/", [
                     }
                 }
                 session.send(msg);
+                builder.Prompts.confirm(session, "Do you like to search any more channels?");
             }
             else {
                 //Check whether it is notify message.
@@ -241,6 +242,15 @@ bot.add("/", [
             }
             //ends here...
         }
+    },
+    function (session, results) {
+        if (results.response) {
+            session.beginDialog("/");
+        }
+        else {
+            delete session.userData.channelNames;
+            session.endDialog();
+        }
     }
 ]);
 
@@ -264,7 +274,7 @@ dialog.on("intent-change-tv-package", [
 ]);
 
 dialog.on("intent.channel", [
-    function (session, args) {
+    function (session, args, next) {
         //session.userData.selectedPackageName = "Custom TV Essentials";
         //session.send("From:" + session.message.from.channelId);
         var entity = builder.EntityRecognizer.findEntity(args.entities, 'channel-name');
@@ -383,5 +393,3 @@ server.post("/api/messages", bot.listen());
 server.listen(process.env.port, function () {
     console.log("%s listening to %s", server.name, server.url);
 });
-
-
