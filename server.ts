@@ -212,7 +212,7 @@ bot.add("/", [
                     }
                 }
                 session.send(msg);
-                builder.Prompts.confirm(session, "Do you like to search any more channels?");
+                //builder.Prompts.confirm(session, "Do you like to search any more channels?");
             }
             else {
                 //Check whether it is notify message.
@@ -242,7 +242,7 @@ bot.add("/", [
             }
             //ends here...
         }
-    },
+    }/*,
     function (session, results) {
         if (results.response) {
             session.beginDialog("/");
@@ -251,7 +251,7 @@ bot.add("/", [
             delete session.userData.channelNames;
             session.endDialog();
         }
-    }
+    }*/
 ]);
 
 dialog.onDefault(builder.DialogAction.send("I'm sorry. I didn't understand."));
@@ -393,3 +393,5 @@ server.post("/api/messages", bot.listen());
 server.listen(process.env.port, function () {
     console.log("%s listening to %s", server.name, server.url);
 });
+
+
