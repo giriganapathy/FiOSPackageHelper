@@ -8,6 +8,7 @@ preferred channels and FiOS TV packages.
 var restify = require("restify");
 var builder = require("botbuilder");
 //var globalTunnel = require('global-tunnel');
+
 var channelsAndPackageMap = require('./channelandpackage');
 var fiosTVPackages = {
     "custom_tv_essentials": "Custom TV - Essentials",
@@ -29,6 +30,8 @@ globalTunnel.initialize();
 */
 
 var model = process.env.model || "https://api.projectoxford.ai/luis/v1/application?id=573c0d0c-060c-4549-8ef5-650218618c08&subscription-key=b27a7109bc1046fb9cc7cfa874e3f819&q=";
+var modelUri = "https://api.projectoxford.ai/luis/v1/application?id=573c0d0c-060c-4549-8ef5-650218618c08&subscription-key=b27a7109bc1046fb9cc7cfa874e3f819";
+
 var dialog = new builder.LuisDialog(model);
 var bot = new builder.BotConnectorBot(); //new builder.TextBot();
 //globalTunnel.end();
@@ -211,8 +214,30 @@ bot.add("/", [
                 session.send(msg);
             }
             else {
-                //say sorry.
-                session.send("Sorry! We dont have such channel in any packages...");
+                //Check whether it is notify message.
+                if (session.message.text.indexOf("set tv package") != -1) {
+                    builder.LuisDialog.recognize(session.message.text, modelUri, function (err, intents, entities) {
+                        if (null != err) {
+                            session.endDialog("Unexpected error while parsing your answer. Try again after sometime!");
+                            return;
+                        }
+                        var entity = builder.EntityRecognizer.findEntity(entities, 'tv-package-name');
+                        if (null != entity) {
+                            var tvPackageName = entity.entity;
+                            if (null != tvPackageName) {
+                                tvPackageName = tvPackageName.replace(/\s+/g, '');
+                                if (session.userData.selectedPackageName != fiosTVPackages[tvPackageName]) {
+                                    session.userData.selectedPackageName = fiosTVPackages[tvPackageName];
+                                    session.send("Your current selection: " + session.userData.selectedPackageName);
+                                }
+                            }
+                        }
+                    });
+                }
+                else {
+                    //say sorry.
+                    session.send("Sorry! We dont have such channel in any packages...");
+                }
             }
             //ends here...
         }
