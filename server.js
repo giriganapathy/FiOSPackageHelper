@@ -62,6 +62,9 @@ bot.add("/", [
                             if ((idx + 1) == tempArr.length) {
                                 //its a last element, so check for ' and ' word.
                                 andIndex = channel.indexOf(" and ");
+                                if (andIndex == -1) {
+                                    andIndex = channel.indexOf(" & ");
+                                }
                                 if (andIndex != -1) {
                                     tempArr = channel.split(" and ");
                                     if (null != tempArr) {
@@ -87,6 +90,9 @@ bot.add("/", [
             }
             else {
                 andIndex = channelInfo.indexOf(" and ");
+                if (andIndex == -1) {
+                    andIndex = channelInfo.indexOf(" & ");
+                }
                 if (andIndex != -1) {
                     tempArr = channelInfo.split(" and ");
                     if (null != tempArr) {
@@ -156,7 +162,9 @@ bot.add("/", [
             //generate responses.
             if (matchedChannelArr.length > 0) {
                 var alreadyAvailableInSelectedPackageFlag = false;
+                var channelFoundInSelectedPackage = [];
                 var channelFoundInOtherPackages = [];
+                var channelFoundInPremiumPackages = [];
                 var packageNameInfo = "";
                 var channelNameInfo = "";
                 var packages = [];
@@ -170,44 +178,107 @@ bot.add("/", [
                             packageNameInfo = packages[pkgIdx];
                             if (packageNameInfo == session.userData.selectedPackageName) {
                                 alreadyAvailableInSelectedPackageFlag = true;
+                                channelFoundInSelectedPackage.push({ "channel": channelNameInfo, "desc": channelObj.description });
                             }
                         }
-                        channelFoundInOtherPackages.push({ "channel": channelNameInfo, "desc": channelObj.description, "packages": packages });
+                        if (false == alreadyAvailableInSelectedPackageFlag) {
+                            channelFoundInOtherPackages.push({ "channel": channelNameInfo, "desc": channelObj.description, "packages": packages });
+                        }
+                    }
+                    else {
+                        //These channels are premium channels which are not available in the package. It has to be purchased separately.
+                        channelFoundInPremiumPackages.push({ "channel": channelNameInfo, "desc": channelObj.description, "packages": packages });
                     }
                 }
-                var msg = "";
+                var channelAndPackageInfo = {};
+                var msg = "";                
                 if (alreadyAvailableInSelectedPackageFlag) {
-                    //Say the channel what you are asking is already available in your selected package.
-                    msg = "The channel you asked is already available in your selected package [ " + session.userData.selectedPackageName + " ]";
-                }
-                else {
-                    var channelAndPackageInfo = {};
-                    if (null != channelFoundInOtherPackages && channelFoundInOtherPackages.length > 0) {
+                    if (null != channelFoundInSelectedPackage && channelFoundInSelectedPackage.length > 0) {
                         if ("directline" != session.message.from.channelId) {
-                            //Say the channel what your asking is not available in your selected package, but it is available in other packages"
+                            //Say the channel what you are asking is already available in your selected package.
+                            msg = "The channels you asked (";
+                            for (var cfspIdx = 0; cfspIdx < channelFoundInSelectedPackage.length; cfspIdx++) {
+                                channelAndPackageInfo = channelFoundInSelectedPackage[cfspIdx];
+                                msg = msg + channelAndPackageInfo["channel"];
+                                if ((cfspIdx + 1) != channelFoundInSelectedPackage.length) {
+                                    msg = msg + ", ";
+                                }
+                            }
+                            msg = msg + ") already available in your selected package [" + session.userData.selectedPackageName + "]\n";
+                            if (null != channelFoundInOtherPackages && channelFoundInOtherPackages.length > 0) {
+                                msg = msg + "However, the other channels what you asked is not available in your selected package [ <span class='user-selected-package'>" + session.userData.selectedPackageName + "</span> ], but it is available in other packages:\n\n";
+                                for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
+                                    channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
+                                    msg = msg + "<span class='channel-info-other'>" + channelAndPackageInfo["channel"] + " </span> -  available in [" + channelAndPackageInfo["packages"].toString() + "] Packages.\n";
+                                }
+                            }
+                            if (null != channelFoundInPremiumPackages && channelFoundInPremiumPackages.length > 0) {
+                                msg = msg + "And the below channels are Premium channels (will not be available in any packages) and to be purchased separately:<br/>";
+                                for (var cfpIdx = 0; cfpIdx < channelFoundInPremiumPackages.length; cfpIdx++) {
+                                    channelAndPackageInfo = channelFoundInPremiumPackages[cfpIdx];
+                                    msg = msg + "<span class='channel-info-other'>" + channelAndPackageInfo["channel"] + " </span> -  available in [" + channelAndPackageInfo["packages"].toString() + "] Packages.<br/>";
+                                }
+                            }
+                        }
+                        else if ("directline" == session.message.from.channelId) {
+                            //Say the channel what you are asking is already available in your selected package.
+                            msg = "The channels you asked (";
+                            for (var cfspIdx = 0; cfspIdx < channelFoundInSelectedPackage.length; cfspIdx++) {
+                                channelAndPackageInfo = channelFoundInSelectedPackage[cfspIdx];
+                                msg = msg + channelAndPackageInfo["channel"];
+                                if ((cfspIdx + 1) != channelFoundInSelectedPackage.length) {
+                                    msg = msg + ", ";
+                                }
+                            }
+                            msg = msg + ") already available in your selected package [" + session.userData.selectedPackageName + "]<br/>";
+                            if (null != channelFoundInOtherPackages && channelFoundInOtherPackages.length > 0) {
+                                msg = msg + "However, the other channels what you asked is not available in your selected package [ <span class='user-selected-package'>" + session.userData.selectedPackageName + "</span> ], but it is available in other packages:<br/>";
+                                for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
+                                    channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
+                                    msg = msg + "<span class='channel-info-other'>" + channelAndPackageInfo["channel"] + " </span> -  available in [" + channelAndPackageInfo["packages"].toString() + "] Packages.<br/>";
+                                }
+                            }
+                            if (null != channelFoundInPremiumPackages && channelFoundInPremiumPackages.length > 0) {
+                                msg = msg + "And the below channels are Premium channels (will not be available in any packages) and to be purchased separately:<br/>";
+                                for (var cfpIdx = 0; cfpIdx < channelFoundInPremiumPackages.length; cfpIdx++) {
+                                    channelAndPackageInfo = channelFoundInPremiumPackages[cfpIdx];
+                                    msg = msg + "<span class='channel-info-other'>" + channelAndPackageInfo["channel"] + " </span> -  available in [" + channelAndPackageInfo["packages"].toString() + "] Packages.<br/>";
+                                }
+                            }
+
+                        }
+                    }
+                }
+                else {                    
+                    if (null != channelFoundInOtherPackages && channelFoundInOtherPackages.length > 0) {
+                        //Say the channel what your asking is not available in your selected package, but it is available in other packages"
+                        if ("directline" != session.message.from.channelId) {
                             msg = "The channel what you asked is not available in your selected package [ " + session.userData.selectedPackageName + " ], but it is available in other packages:\n\n";
-                            //msg = "Field               | Information                             \n";
-                            //msg = msg + "--------------------| ----------------------------------------\n";
                             for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
                                 channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
-                                msg = msg + "##### " + channelAndPackageInfo["channel"] + " -  available in [ " + channelAndPackageInfo["packages"].toString() + " ] Packages.\n\n";
-                                //msg = msg + "Description" + " | " + channelAndPackageInfo["desc"] + "\n";
-                                ///msg = msg + "Packages" + " | " + channelAndPackageInfo["packages"].toString() + "\n";
+                                msg = msg + "<span class='channel-info-other'>" + channelAndPackageInfo["channel"] + " </span> -  available in [" + channelAndPackageInfo["packages"].toString() + "] Packages.<br/>";
+                            }
+                            if (null != channelFoundInPremiumPackages && channelFoundInPremiumPackages.length > 0) {
+                                msg = msg + "And the below channels are Premium channels (will not be available in any packages) and to be purchased separately:<br/>";
+                                for (var cfpIdx = 0; cfpIdx < channelFoundInPremiumPackages.length; cfpIdx++) {
+                                    channelAndPackageInfo = channelFoundInPremiumPackages[cfpIdx];
+                                    msg = msg + "<span class='channel-info-other'>" + channelAndPackageInfo["channel"] + " </span> -  available in [" + channelAndPackageInfo["packages"].toString() + "] Packages.<br/>";
+                                }
                             }
                         }
                         else if ("directline" == session.message.from.channelId) {
                             msg = "The channel what you asked is not available in your selected package [ <span class='user-selected-package'>" + session.userData.selectedPackageName + "</span> ], but it is available in other packages:\n\n<br/>";
-                            //msg = msg + "<table><thead/><tbody>";
-                            //msg = msg + "<tr><td class='cell-field-hdr'>Field</td><td class='cell-info-hdr'>Information</td></tr>";
                             for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
                                 channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
                                 msg = msg + "<span class='channel-info-other'>" + channelAndPackageInfo["channel"] + " </span> -  available in [" + channelAndPackageInfo["packages"].toString() + "] Packages.<br/>";
-                                //msg = msg + "<tr><td class='cell-field'>Channel" + "</td><td class='cell-info'>" + channelAndPackageInfo["channel"] + "</td></tr>\n";
-                                //msg = msg + "<tr><td class='cell-field'>Description" + "</td><td class='cell-info'>" + channelAndPackageInfo["desc"] + "</td></tr>";
-                                //msg = msg + "<tr><td class='cell-field'>Packages" + "</td><td class='cell-info'>" + channelAndPackageInfo["packages"].toString() + "</td></tr>";
-                                //msg = msg + "<tr><td class='cell-empty'></td><td class='cell-empty'></td></tr>";
                             }
-                            //msg = msg + "</tbody></table>";
+                            if (null != channelFoundInPremiumPackages && channelFoundInPremiumPackages.length > 0) {
+                                msg = msg + "And the below channels are Premium channels (will not be available in any packages) and to be purchased separately:<br/>";
+                                for (var cfpIdx = 0; cfpIdx < channelFoundInPremiumPackages.length; cfpIdx++) {
+                                    channelAndPackageInfo = channelFoundInPremiumPackages[cfpIdx];
+                                    msg = msg + "<span class='channel-info-other'>" + channelAndPackageInfo["channel"] + " </span> -  available in [" + channelAndPackageInfo["packages"].toString() + "] Packages.<br/>";
+                                }
+                            }
                         }
                     }
                 }
