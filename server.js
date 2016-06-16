@@ -39,6 +39,9 @@ var bot = new builder.BotConnectorBot(); //new builder.TextBot();
 bot.add("/", [
     function (session, args, next) {
         if (!session.userData.channelNames) {
+            if (null != session.userData.selectedPackageName) {
+                builder.DialogAction.send("Your current selection: " + session.userData.selectedPackageName);
+            }
             builder.Prompts.text(session, "Please type the channel name...if you are looking for any specific channels?");
         }
         else {
