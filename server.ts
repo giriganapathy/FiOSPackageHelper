@@ -258,40 +258,42 @@ bot.add("/", [
                         }
                     }
                 }
-                else {                    
-                    if (null != channelFoundInOtherPackages && channelFoundInOtherPackages.length > 0) {
+                else {                                        
                         //Say the channel what your asking is not available in your selected package, but it is available in other packages"
-                        if ("directline" != session.message.from.channelId) {
+                    if ("directline" != session.message.from.channelId) {
+                        if (null != channelFoundInOtherPackages && channelFoundInOtherPackages.length > 0) {
                             msg = "The channel what you asked is not available in your selected package [ " + session.userData.selectedPackageName + " ], but it is available in other packages:\n\n";
                             for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
                                 channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
                                 msg = msg + "<span class='channel-info-other'>" + channelAndPackageInfo["channel"] + " </span> -  available in [" + channelAndPackageInfo["packages"].toString() + "] Packages.<br/>";
                             }
-                            if (null != channelFoundInPremiumPackages && channelFoundInPremiumPackages.length > 0) {
-                                msg = msg + "And the below channels are Premium channels (will not be available in any packages) and to be purchased separately:<br/>";
-                                for (var cfpIdx = 0; cfpIdx < channelFoundInPremiumPackages.length; cfpIdx++) {
-                                    channelAndPackageInfo = channelFoundInPremiumPackages[cfpIdx];
-                                    msg = msg + "<span class='channel-info-premium'>" + channelAndPackageInfo["channel"] + " </span>";
-                                    if ((cfpIdx + 1) != channelFoundInPremiumPackages.length) {
-                                        msg = msg + ", ";
-                                    }
+                        }
+                        if (null != channelFoundInPremiumPackages && channelFoundInPremiumPackages.length > 0) {
+                            msg = msg + "And the below channels are Premium channels (will not be available in any packages) and to be purchased separately:<br/>";
+                            for (var cfpIdx = 0; cfpIdx < channelFoundInPremiumPackages.length; cfpIdx++) {
+                                channelAndPackageInfo = channelFoundInPremiumPackages[cfpIdx];
+                                msg = msg + "<span class='channel-info-premium'>" + channelAndPackageInfo["channel"] + " </span>";
+                                if ((cfpIdx + 1) != channelFoundInPremiumPackages.length) {
+                                    msg = msg + ", ";
                                 }
                             }
                         }
-                        else if ("directline" == session.message.from.channelId) {
+                    }
+                    else if ("directline" == session.message.from.channelId) {
+                        if (null != channelFoundInOtherPackages && channelFoundInOtherPackages.length > 0) {
                             msg = "The channel what you asked is not available in your selected package [ <span class='user-selected-package'>" + session.userData.selectedPackageName + "</span> ], but it is available in other packages:\n\n<br/>";
                             for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
                                 channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
                                 msg = msg + "<span class='channel-info-other'>" + channelAndPackageInfo["channel"] + " </span> -  available in [" + channelAndPackageInfo["packages"].toString() + "] Packages.<br/>";
                             }
-                            if (null != channelFoundInPremiumPackages && channelFoundInPremiumPackages.length > 0) {
-                                msg = msg + "And the below channels are Premium channels (will not be available in any packages) and to be purchased separately:<br/>";
-                                for (var cfpIdx = 0; cfpIdx < channelFoundInPremiumPackages.length; cfpIdx++) {
-                                    channelAndPackageInfo = channelFoundInPremiumPackages[cfpIdx];
-                                    msg = msg + "<span class='channel-info-premium'>" + channelAndPackageInfo["channel"] + " </span>";
-                                    if ((cfpIdx + 1) != channelFoundInPremiumPackages.length) {
-                                        msg = msg + ", ";
-                                    }
+                        }
+                        if (null != channelFoundInPremiumPackages && channelFoundInPremiumPackages.length > 0) {
+                            msg = msg + "And the below channels are Premium channels (will not be available in any packages) and to be purchased separately:<br/>";
+                            for (var cfpIdx = 0; cfpIdx < channelFoundInPremiumPackages.length; cfpIdx++) {
+                                channelAndPackageInfo = channelFoundInPremiumPackages[cfpIdx];
+                                msg = msg + "<span class='channel-info-premium'>" + channelAndPackageInfo["channel"] + " </span>";
+                                if ((cfpIdx + 1) != channelFoundInPremiumPackages.length) {
+                                    msg = msg + ", ";
                                 }
                             }
                         }
