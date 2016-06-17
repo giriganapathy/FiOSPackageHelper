@@ -45,6 +45,7 @@ bot.add("/", [
             builder.Prompts.text(session, "Please type the channel name...if you are looking for any specific channels?");
         }
         else {
+            builder.DialogAction.send("Your current selection: " + session.userData.selectedPackageName);
             next({ "response": session.message.text });
         }
     },
