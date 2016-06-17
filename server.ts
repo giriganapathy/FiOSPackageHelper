@@ -177,6 +177,7 @@ bot.add("/", [
                 var packages = [];
                 var length = matchedChannelArr.length;
                 for (var idx = 0; idx < length; idx++) {
+                    alreadyAvailableInSelectedPackageFlag = false;
                     channelNameInfo = matchedChannelArr[idx];
                     var channelObj = channelsAndPackageMap[channelNameInfo];
                     packages = channelObj.packages;
