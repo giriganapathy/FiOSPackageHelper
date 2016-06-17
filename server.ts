@@ -409,6 +409,7 @@ dialog.on("intent-change-tv-package", [
     }
 ]);
 
+/*
 dialog.on("intent.channel", [
     function (session, args, next) {
         //session.userData.selectedPackageName = "Custom TV Essentials";
@@ -520,7 +521,7 @@ dialog.on("intent.channel", [
             session.send("Sorry! I dont understand..Please provide more information...");
         }
     }
-]);
+]);*/
 //bot.listenStdin();
 var server = restify.createServer();
 server.use(bot.verifyBotFramework({ appId: process.env.appId, appSecret: process.env.appSecret }));
