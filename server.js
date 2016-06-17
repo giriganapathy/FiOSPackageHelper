@@ -177,7 +177,7 @@ bot.add("/", [
                 var packages = [];
                 var length = matchedChannelArr.length;
                 for (var idx = 0; idx < length; idx++) {
-                    alreadyAvailableInSelectedPackageFlag = false
+                    alreadyAvailableInSelectedPackageFlag = false;
                     channelNameInfo = matchedChannelArr[idx];
                     var channelObj = channelsAndPackageMap[channelNameInfo];
                     packages = channelObj.packages;
@@ -200,81 +200,80 @@ bot.add("/", [
                 }
                 var channelAndPackageInfo = {};
                 var msg = "";                
-                if (alreadyAvailableInSelectedPackageFlag) {
-                    if (null != channelFoundInSelectedPackage && channelFoundInSelectedPackage.length > 0) {
-                        if ("directline" != session.message.from.channelId) {
-                            //Say the channel what you are asking is already available in your selected package.
-                            msg = "The channels you asked (";
-                            for (var cfspIdx = 0; cfspIdx < channelFoundInSelectedPackage.length; cfspIdx++) {
-                                channelAndPackageInfo = channelFoundInSelectedPackage[cfspIdx];
-                                msg = msg + channelAndPackageInfo["channel"];
-                                if ((cfspIdx + 1) != channelFoundInSelectedPackage.length) {
-                                    msg = msg + ", ";
-                                }
-                            }
-                            msg = msg + ") already available in your selected package [<span class='user-selected-package'>" + session.userData.selectedPackageName + "</span>]\n";
-                            if (null != channelFoundInOtherPackages && channelFoundInOtherPackages.length > 0) {
-                                msg = msg + "<br/>However, the other channels what you asked is not available in your selected package [ <span class='user-selected-package'>" + session.userData.selectedPackageName + "</span> ], but it is available in other packages:\n\n";
-                                for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
-                                    channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
-                                    msg = msg + "<span class='channel-info-other'>" + channelAndPackageInfo["channel"] + " </span> -  available in [" + channelAndPackageInfo["packages"].toString() + "] Packages.\n";
-                                }
-                            }
-                            if (null != channelFoundInPremiumPackages && channelFoundInPremiumPackages.length > 0) {
-                                msg = msg + "<br/><br/>And the below channels are Premium channels (will not be available in any packages) and to be purchased separately:<br/>";
-                                for (var cfpIdx = 0; cfpIdx < channelFoundInPremiumPackages.length; cfpIdx++) {
-                                    channelAndPackageInfo = channelFoundInPremiumPackages[cfpIdx];
-                                    msg = msg + "<span class='channel-info-premium'>" + channelAndPackageInfo["channel"] + " </span>";
-                                    if ((cfpIdx + 1) != channelFoundInPremiumPackages.length) {
-                                        msg = msg + ", ";
-                                    }
-                                }
-                                var premiumChannelCount = channelFoundInPremiumPackages.length;
-                                if (premiumChannelCount < 5) {
-                                    msg = msg + " for $" + premiumChannelsPrice[premiumChannelCount] + "/mo.";
-                                }
-                                else {
-                                    msg = msg + " for $40/mo.";
-                                }
+                //if (alreadyAvailableInSelectedPackageFlag) {
+                if (null != channelFoundInSelectedPackage && channelFoundInSelectedPackage.length > 0) {
+                    if ("directline" != session.message.from.channelId) {
+                        //Say the channel what you are asking is already available in your selected package.
+                        msg = "The channels you asked (";
+                        for (var cfspIdx = 0; cfspIdx < channelFoundInSelectedPackage.length; cfspIdx++) {
+                            channelAndPackageInfo = channelFoundInSelectedPackage[cfspIdx];
+                            msg = msg + channelAndPackageInfo["channel"];
+                            if ((cfspIdx + 1) != channelFoundInSelectedPackage.length) {
+                                msg = msg + ", ";
                             }
                         }
-                        else if ("directline" == session.message.from.channelId) {
-                            //Say the channel what you are asking is already available in your selected package.
-                            msg = "The channels you asked (";
-                            for (var cfspIdx = 0; cfspIdx < channelFoundInSelectedPackage.length; cfspIdx++) {
-                                channelAndPackageInfo = channelFoundInSelectedPackage[cfspIdx];
-                                msg = msg + channelAndPackageInfo["channel"];
-                                if ((cfspIdx + 1) != channelFoundInSelectedPackage.length) {
+                        msg = msg + ") already available in your selected package [<span class='user-selected-package'>" + session.userData.selectedPackageName + "</span>]\n";
+                        if (null != channelFoundInOtherPackages && channelFoundInOtherPackages.length > 0) {
+                            msg = msg + "<br/>However, the other channels what you asked is not available in your selected package [ <span class='user-selected-package'>" + session.userData.selectedPackageName + "</span> ], but it is available in other packages:\n\n";
+                            for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
+                                channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
+                                msg = msg + "<span class='channel-info-other'>" + channelAndPackageInfo["channel"] + " </span> -  available in [" + channelAndPackageInfo["packages"].toString() + "] Packages.\n";
+                            }
+                        }
+                        if (null != channelFoundInPremiumPackages && channelFoundInPremiumPackages.length > 0) {
+                            msg = msg + "<br/><br/>And the below channels are Premium channels (will not be available in any packages) and to be purchased separately:<br/>";
+                            for (var cfpIdx = 0; cfpIdx < channelFoundInPremiumPackages.length; cfpIdx++) {
+                                channelAndPackageInfo = channelFoundInPremiumPackages[cfpIdx];
+                                msg = msg + "<span class='channel-info-premium'>" + channelAndPackageInfo["channel"] + " </span>";
+                                if ((cfpIdx + 1) != channelFoundInPremiumPackages.length) {
                                     msg = msg + ", ";
                                 }
                             }
-                            msg = msg + ") already available in your selected package [<span class='user-selected-package'>" + session.userData.selectedPackageName + "</span>]<br/>";
-                            if (null != channelFoundInOtherPackages && channelFoundInOtherPackages.length > 0) {
-                                msg = msg + "<br/>However, the other channels what you asked is not available in your selected package [ <span class='user-selected-package'>" + session.userData.selectedPackageName + "</span> ], but it is available in other packages:<br/>";
-                                for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
-                                    channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
-                                    msg = msg + "<span class='channel-info-other'>" + channelAndPackageInfo["channel"] + " </span> -  available in [" + channelAndPackageInfo["packages"].toString() + "] Packages.<br/>";
+                            var premiumChannelCount = channelFoundInPremiumPackages.length;
+                            if (premiumChannelCount < 5) {
+                                msg = msg + " for $" + premiumChannelsPrice[premiumChannelCount] + "/mo.";
+                            }
+                            else {
+                                msg = msg + " for $40/mo.";
+                            }
+                        }
+                    }
+                    else if ("directline" == session.message.from.channelId) {
+                        //Say the channel what you are asking is already available in your selected package.
+                        msg = "The channels you asked (";
+                        for (var cfspIdx = 0; cfspIdx < channelFoundInSelectedPackage.length; cfspIdx++) {
+                            channelAndPackageInfo = channelFoundInSelectedPackage[cfspIdx];
+                            msg = msg + channelAndPackageInfo["channel"];
+                            if ((cfspIdx + 1) != channelFoundInSelectedPackage.length) {
+                                msg = msg + ", ";
+                            }
+                        }
+                        msg = msg + ") already available in your selected package [<span class='user-selected-package'>" + session.userData.selectedPackageName + "</span>]<br/>";
+                        if (null != channelFoundInOtherPackages && channelFoundInOtherPackages.length > 0) {
+                            msg = msg + "<br/>However, the other channels what you asked is not available in your selected package [ <span class='user-selected-package'>" + session.userData.selectedPackageName + "</span> ], but it is available in other packages:<br/>";
+                            for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
+                                channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
+                                msg = msg + "<span class='channel-info-other'>" + channelAndPackageInfo["channel"] + " </span> -  available in [" + channelAndPackageInfo["packages"].toString() + "] Packages.<br/>";
+                            }
+                        }
+                        if (null != channelFoundInPremiumPackages && channelFoundInPremiumPackages.length > 0) {
+                            msg = msg + "<br/><br/>And the below channels are Premium channels (will not be available in any packages) and to be purchased separately:<br/>";
+                            for (var cfpIdx = 0; cfpIdx < channelFoundInPremiumPackages.length; cfpIdx++) {
+                                channelAndPackageInfo = channelFoundInPremiumPackages[cfpIdx];
+                                msg = msg + "<span class='channel-info-premium'>" + channelAndPackageInfo["channel"] + " </span>";
+                                if ((cfpIdx + 1) != channelFoundInPremiumPackages.length) {
+                                    msg = msg + ", ";
                                 }
                             }
-                            if (null != channelFoundInPremiumPackages && channelFoundInPremiumPackages.length > 0) {
-                                msg = msg + "<br/><br/>And the below channels are Premium channels (will not be available in any packages) and to be purchased separately:<br/>";
-                                for (var cfpIdx = 0; cfpIdx < channelFoundInPremiumPackages.length; cfpIdx++) {
-                                    channelAndPackageInfo = channelFoundInPremiumPackages[cfpIdx];
-                                    msg = msg + "<span class='channel-info-premium'>" + channelAndPackageInfo["channel"] + " </span>";
-                                    if ((cfpIdx + 1) != channelFoundInPremiumPackages.length) {
-                                        msg = msg + ", ";
-                                    }
-                                }
-                                var premiumChannelCount = channelFoundInPremiumPackages.length;
-                                if (premiumChannelCount < 5) {
-                                    msg = msg + " for $" + premiumChannelsPrice[premiumChannelCount] + "/mo.";
-                                }
-                                else {
-                                    msg = msg + " for $40/mo.";
-                                }
+                            var premiumChannelCount = channelFoundInPremiumPackages.length;
+                            if (premiumChannelCount < 5) {
+                                msg = msg + " for $" + premiumChannelsPrice[premiumChannelCount] + "/mo.";
                             }
+                            else {
+                                msg = msg + " for $40/mo.";
+                            }
+                        }
 
-                        }
                     }
                 }
                 else {                                        
@@ -514,5 +513,3 @@ server.post("/api/messages", bot.listen());
 server.listen(process.env.port, function () {
     console.log("%s listening to %s", server.name, server.url);
 });
-
-
