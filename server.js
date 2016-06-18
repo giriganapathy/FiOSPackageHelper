@@ -55,8 +55,7 @@ bot.add("/", [
         if (true === results.response) {
             if (!session.userData.channelSearchResultsShown || true == session.userData.channelSearchResultsShown) {
                 session.userData.channelSearchResultsShown = false;
-                session.send("Hey .. that’s cool.. Can i have the channel names which you are looking for?");
-                session.beginDialog('/query-package-luis');
+                builder.Prompts.text(session, "Hey .. that’s cool.. Can i have the channel names which you are looking for?");                
             }
             else {
                 session.beginDialog('/query-package-luis');
@@ -64,6 +63,14 @@ bot.add("/", [
         }
         else {
             session.endDialog("Thanks");
+        }
+    },
+    function (session, results, next) {
+        if (results.response) {
+            session.beginDialog('/query-package-luis');
+        }
+        else {
+            session.send("Sorry! i did not understand. Could you please provide me the channel name again?");
         }
     }
         
