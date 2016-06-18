@@ -35,10 +35,43 @@ var modelUri = "https://api.projectoxford.ai/luis/v1/application?id=573c0d0c-060
 var dialog = new builder.LuisDialog(model);
 var bot = new builder.BotConnectorBot(); //new builder.TextBot();
 //globalTunnel.end();
-bot.add("/", dialog);
+
+//start with waterfall...
+bot.add("/", [
+    function (session, args, next) {
+        if (!session.userData.channelSearchResultsShown) {
+            builder.Prompts.confirm(session, "Are you looking for any specific channels in your package?");
+        }
+        else {
+            if (session.userData.channelSearchResultsShown) {
+                builder.Prompts.confirm(session, "Are you still looking for any specific channels in your package?");
+            }
+            else {
+                next({"response":true});
+            }
+        }
+    },
+    function (session, results, next) {
+        if (true === results.response) {
+            if (!session.userData.channelSearchResultsShown || true == session.userData.channelSearchResultsShown) {
+                session.userData.channelSearchResultsShown = false;
+                session.send("Hey .. that’s cool.. Can i have the channel names which you are looking for?");
+                session.beginDialog('/query-package-luis');
+            }
+            else {
+                session.beginDialog('/query-package-luis');
+            }            
+        }
+        else {
+            session.endDialog("Thanks");
+        }
+    }
+        
+]);
+bot.add("/query-package-luis", dialog);
 bot.add("/query-package", [
     function (session, args, next) {
-        if (!session.userData.channelNames) {
+        /*if (!session.userData.channelNames) {
             if (null != session.userData.selectedPackageName) {
                 builder.DialogAction.send("Your current selection: " + session.userData.selectedPackageName);
             }
@@ -46,7 +79,8 @@ bot.add("/query-package", [
         }
         else {
             next({ "response": session.message.text });
-        }
+        }*/
+        next({ "response": session.message.text });
     },
     function (session, results, next) {
         var userPreferredChannels = [];
@@ -117,13 +151,14 @@ bot.add("/query-package", [
             next({ "response": session.userData.channelNames });
         }
         else {
-            //delete session.userData.channelNames;
+            session.userData.channelSearchResultsShown = false;
             session.send("Sorry! i did not understand. Could you please provide me the channel name again?");
         }
     },
     function (session, results) {
         var channelNames = results.response;
         if (null == channelNames || channelNames.length == 0) {
+            session.userData.channelSearchResultsShown = false;
             session.send("Could you please provide me the channel name again?");
 
         } else if (null != channelNames) {
@@ -158,6 +193,7 @@ bot.add("/query-package", [
                     }
                 }
                 else {
+                    session.userData.channelSearchResultsShown = false;
                     session.send("Error: Package and Channel Source information is missing...");
                 }
             }
@@ -331,11 +367,13 @@ bot.add("/query-package", [
                         }
                     }
                 }
+                session.userData.channelSearchResultsShown = true;
                 session.send(msg);
                 session.replaceDialog('/');
                 //builder.Prompts.confirm(session, "Do you like to search any more channels?");
             }
             else {
+                session.userData.channelSearchResultsShown = false;
                 session.send("Sorry! I did not understand...Please type the channel name again 4...");
             }
             //ends here...
