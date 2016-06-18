@@ -35,8 +35,8 @@ var modelUri = "https://api.projectoxford.ai/luis/v1/application?id=573c0d0c-060
 var dialog = new builder.LuisDialog(model);
 var bot = new builder.BotConnectorBot(); //new builder.TextBot();
 //globalTunnel.end();
-//bot.add("/", dialog);
-bot.add("/", [
+bot.add("/", dialog);
+bot.add("/query-package", [
     function (session, args, next) {
         if (!session.userData.channelNames) {
             if (null != session.userData.selectedPackageName) {
@@ -86,7 +86,7 @@ bot.add("/", [
                             }
                             else {
                                 userPreferredChannels.push(channel.trim());
-                            }                            
+                            }
                         }
                     }
                 }
@@ -110,7 +110,7 @@ bot.add("/", [
                 else {
                     userPreferredChannels.push(channelInfo.trim());
                 }
-                
+
             }
             session.userData.channelNames = userPreferredChannels;
             //session.send(session.userData.channelNames);
@@ -119,7 +119,7 @@ bot.add("/", [
         else {
             //delete session.userData.channelNames;
             session.send("Sorry! i did not understand. Could you please provide me the channel name again?");
-        }        
+        }
     },
     function (session, results) {
         var channelNames = results.response;
@@ -199,7 +199,7 @@ bot.add("/", [
                     }
                 }
                 var channelAndPackageInfo = {};
-                var msg = "";                
+                var msg = "";
                 //if (alreadyAvailableInSelectedPackageFlag) {
                 if (null != channelFoundInSelectedPackage && channelFoundInSelectedPackage.length > 0) {
                     if ("directline" != session.message.from.channelId) {
@@ -276,8 +276,8 @@ bot.add("/", [
 
                     }
                 }
-                else {                                        
-                        //Say the channel what your asking is not available in your selected package, but it is available in other packages"
+                else {
+                    //Say the channel what your asking is not available in your selected package, but it is available in other packages"
                     if ("directline" != session.message.from.channelId) {
                         if (null != channelFoundInOtherPackages && channelFoundInOtherPackages.length > 0) {
                             msg = "The channel what you asked is not available in your selected package [<span class='user-selected-package'>" + session.userData.selectedPackageName + "</span>], but it is available in other packages:\n\n";
@@ -337,7 +337,8 @@ bot.add("/", [
             else {
                 //Check whether it is notify message.
                 //if (session.message.text.indexOf("set tv package") != -1) {
-                if (true) {
+                /*
+                if (false) {
                     builder.LuisDialog.recognize(session.message.text, modelUri, function (err, intents, entities) {
                         if (null != err) {
                             session.endDialog("Unexpected error while parsing your answer. Try again after sometime!");
@@ -374,7 +375,7 @@ bot.add("/", [
                 else {
                     //say sorry.
                     session.send("Sorry! We dont have such channel in any packages...");
-                }
+                }*/
             }
             //ends here...
         }
@@ -390,7 +391,9 @@ bot.add("/", [
     }*/
 ]);
 
-dialog.onDefault(builder.DialogAction.send("I'm sorry. I didn't understand."));
+//dialog.onDefault(builder.DialogAction.send("I'm sorry. I didn't understand."));
+dialog.onDefault("/query-package");
+
 dialog.on("intent-change-tv-package", [
     function (session, args) {
         //session.userData.selectedPackageName = "Custom TV Essentials";
@@ -409,6 +412,26 @@ dialog.on("intent-change-tv-package", [
     }
 ]);
 
+dialog.on("intent.channel", [
+    function (session, args, next) {
+        //session.userData.selectedPackageName = "Custom TV Essentials";
+        //session.send("From:" + session.message.from.channelId);
+        var entity = builder.EntityRecognizer.findEntity(args.entities, 'channel-name');
+        if (null != entity) {
+            var channelName = entity.entity;
+            if (null != channelName) {
+                session.message.text = channelName;
+                session.beginDialog('/query-package');
+            }
+            else {
+                session.send("Sorry! I did not understand...Please type the channel name again...");
+            }
+        }
+        else {
+            session.send("Sorry! I did not understand...Please type the channel name again 2...");
+        }
+    }
+]);
 /*
 dialog.on("intent.channel", [
     function (session, args, next) {
