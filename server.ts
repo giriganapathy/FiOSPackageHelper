@@ -332,50 +332,11 @@ bot.add("/query-package", [
                     }
                 }
                 session.send(msg);
+                session.replaceDialog('/');
                 //builder.Prompts.confirm(session, "Do you like to search any more channels?");
             }
             else {
-                //Check whether it is notify message.
-                //if (session.message.text.indexOf("set tv package") != -1) {
-                /*
-                if (false) {
-                    builder.LuisDialog.recognize(session.message.text, modelUri, function (err, intents, entities) {
-                        if (null != err) {
-                            session.endDialog("Unexpected error while parsing your answer. Try again after sometime!");
-                            return;
-                        }
-                        //check for tv-package-name scenario first...
-                        var entity = builder.EntityRecognizer.findEntity(entities, 'tv-package-name');
-                        if (null != entity) {
-                            var tvPackageName = entity.entity;
-                            if (null != tvPackageName) {
-                                tvPackageName = tvPackageName.replace(/\s+/g, '');
-                                if (session.userData.selectedPackageName != fiosTVPackages[tvPackageName]) {
-                                    session.userData.selectedPackageName = fiosTVPackages[tvPackageName];
-                                    session.send("Your current selection: " + session.userData.selectedPackageName);
-                                }
-                            }
-                        }
-                        else {
-                            entity = builder.EntityRecognizer.findEntity(args.entities, 'channel-name');
-                            if (null != entity) {
-                                var channelName = entity.entity;
-                                if (null != channelName) {
-                                    session.message.text = channelName;
-                                    session.beginDialog('/');
-                                }
-                            }
-                            else {
-                                //say sorry.
-                                session.send("Sorry! We dont have such channel in any packages...");
-                            }
-                        }
-                    });
-                }
-                else {
-                    //say sorry.
-                    session.send("Sorry! We dont have such channel in any packages...");
-                }*/
+                session.send("Sorry! I did not understand...Please type the channel name again 4...");
             }
             //ends here...
         }
@@ -424,11 +385,13 @@ dialog.on("intent.channel", [
                 session.beginDialog('/query-package');
             }
             else {
-                session.send("Sorry! I did not understand...Please type the channel name again...");
+                //session.send("Sorry! I did not understand...Please type the channel name again...");
+                session.beginDialog('/query-package');
             }
         }
         else {
-            session.send("Sorry! I did not understand...Please type the channel name again 2...");
+            //session.send("Sorry! I did not understand...Please type the channel name again 2...");
+            session.beginDialog('/query-package');
         }
     }
 ]);
