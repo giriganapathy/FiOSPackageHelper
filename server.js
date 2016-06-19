@@ -47,7 +47,7 @@ bot.add("/", [
                 builder.Prompts.confirm(session, "Are you still looking for any specific channels in your package?");
             }
             else {
-                next({"response":true});
+                next({ "response": true });
             }
         }
     },
@@ -55,11 +55,11 @@ bot.add("/", [
         if (true === results.response) {
             if (!session.userData.channelSearchResultsShown || true == session.userData.channelSearchResultsShown) {
                 session.userData.channelSearchResultsShown = false;
-                builder.Prompts.text(session, "Hey .. that’s cool.. Can i have the channel names which you are looking for?");                
+                builder.Prompts.text(session, "Hey .. that’s cool.. Can i have the channel names which you are looking for?");
             }
             else {
                 session.beginDialog('/query-package-luis');
-            }            
+            }
         }
         else {
             session.endDialog("Thanks");
@@ -73,7 +73,7 @@ bot.add("/", [
             session.send("Sorry! i did not understand. Could you please provide me the channel name again?");
         }
     }
-        
+
 ]);
 bot.add("/query-package-luis", dialog);
 bot.add("/query-package", [
@@ -375,9 +375,9 @@ bot.add("/query-package", [
                     }
                 }
                 session.userData.channelSearchResultsShown = true;
-                session.send(msg);
+                //session.send(msg);
                 //session.replaceDialog('/');
-                builder.Prompts.confirm(session, "Are you still looking for any specific channels in your package?");                
+                builder.Prompts.confirm(session, msg + "<br/><br/>Are you still looking for any specific channels in your package?");
             }
             else {
                 session.userData.channelSearchResultsShown = false;
@@ -402,7 +402,7 @@ bot.add("/query-package", [
     },
     function (session, results) {
         if (results.response) {
-            session.beginDialog('/query-package-luis');            
+            session.beginDialog('/query-package-luis');
         }
     }
 
