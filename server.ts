@@ -376,8 +376,8 @@ bot.add("/query-package", [
                 }
                 session.userData.channelSearchResultsShown = true;
                 session.send(msg);
-                session.replaceDialog('/');
-                //builder.Prompts.confirm(session, "Do you like to search any more channels?");
+                //session.replaceDialog('/');
+                builder.Prompts.confirm(session, "Are you still looking for any specific channels in your package?");                
             }
             else {
                 session.userData.channelSearchResultsShown = false;
@@ -385,7 +385,28 @@ bot.add("/query-package", [
             }
             //ends here...
         }
-    }/*,
+    },
+    function (session, results, next) {
+        if (true == session.userData.channelSearchResultsShown) {
+            if (results.response) {
+                session.userData.channelSearchResultsShown = false;
+                builder.Prompts.text(session, "Hey .. that’s cool.. Can i have the channel names which you are looking for?");
+            }
+            else {
+                session.endDialog("Thanks 2");
+            }
+        }
+        else {
+            next();
+        }
+    },
+    function (session, results) {
+        if (results.response) {
+            session.beginDialog('/query-package-luis');            
+        }
+    }
+
+    /*,
     function (session, results) {
         if (results.response) {
             session.beginDialog("/");
