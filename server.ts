@@ -39,7 +39,10 @@ var bot = new builder.BotConnectorBot(); //new builder.TextBot();
 //start with waterfall...
 bot.add("/", [
     function (session, args, next) {
-        if (!session.userData.channelSearchResultsShown) {
+        if (session.message.text.indexOf("set tv package") != -1) {
+            session.beginDialog('/query-package-luis');
+        }
+        else if (!session.userData.channelSearchResultsShown) {
             builder.Prompts.confirm(session, "Are you looking for any specific channels in your package?");
         }
         else {
