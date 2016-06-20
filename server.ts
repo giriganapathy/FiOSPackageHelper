@@ -74,7 +74,8 @@ bot.add("/", [
         }
         else {
             delete session.userData.channelSearchResultsShown;
-            session.endDialog("Thanks");
+            session.beginDialog('/ask-user');
+            //session.endDialog("Thanks");
         }
     },
     function (session, results, next) {
@@ -87,6 +88,32 @@ bot.add("/", [
     }
 
 ]);
+
+bot.add("/ask-user", [
+    function (session, args, next) {
+        //1. Which channel do you frequently watch?
+        //2. Thinking about any Premium Chanels?
+        //3. Are you looking for any HD Channels?
+        builder.Prompts.choice(session, "Tell me whats in your mind?", "1. Which channel do you frequently watch?|Thinking about any Premium Chanels?|Are you looking for any HD Channels?");
+    },
+    function (session, results, next) {
+        if (results.response && results.response.entity) {
+            builder.Prompts.text(session, "Hey .. that’s cool.. Can i have the channel names which you are looking for?");
+        }
+        else {
+            //session.endDialog("Thanks");
+        }
+    },
+    function (session, results, next) {
+        if (results.response) {
+            session.beginDialog('/query-package-luis');
+        }
+        else {
+            session.send("Sorry! i did not understand. Could you please provide me the channel name again?");
+        }
+    }
+]);
+
 bot.add("/query-package-luis", dialog);
 bot.add("/query-package", [
     function (session, args, next) {
