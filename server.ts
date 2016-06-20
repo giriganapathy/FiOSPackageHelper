@@ -74,7 +74,7 @@ bot.add("/", [
         }
         else {
             delete session.userData.channelSearchResultsShown;
-            session.beginDialog('/ask-user');
+            session.replaceDialog('/ask-user');
             //session.endDialog("Thanks");
         }
     },
@@ -94,7 +94,7 @@ bot.add("/ask-user", [
         //1. Which channel do you frequently watch?
         //2. Thinking about any Premium Chanels?
         //3. Are you looking for any HD Channels?
-        builder.Prompts.choice(session, "Tell me whats in your mind?", "<br/>Thinking about any Premium Chanels?|<br/>Are you looking for any HD Channels?|<br/>Tell me your favorite channel<br/>(Type your choice number)");
+        builder.Prompts.choice(session, "Tell me whats in your mind?", "Thinking about any Premium Chanels?|Are you looking for any HD Channels?|Tell me your favorite channel", { listStyle: "list" });
     },
     function (session, results, next) {
         if (results.response && results.response.entity) {
