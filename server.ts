@@ -83,7 +83,7 @@ bot.add("/", [
             session.beginDialog('/query-package-luis');
         }
         else {
-            session.send("Sorry! i did not understand. Could you please provide me the channel name again?");
+            session.send("Sorry! i did not understand. Could you please provide me the channel name again 1?");
         }
     }
 
@@ -94,7 +94,7 @@ bot.add("/ask-user", [
         //1. Which channel do you frequently watch?
         //2. Thinking about any Premium Chanels?
         //3. Are you looking for any HD Channels?
-        builder.Prompts.choice(session, "Tell me whats in your mind?", "1. Which channel do you frequently watch?|Thinking about any Premium Chanels?|Are you looking for any HD Channels?");
+        builder.Prompts.choice(session, "Tell me whats in your mind?", "Which channel do you frequently watch?<br/>|Thinking about any Premium Chanels?<br/>|Are you looking for any HD Channels?");
     },
     function (session, results, next) {
         if (results.response && results.response.entity) {
@@ -106,10 +106,10 @@ bot.add("/ask-user", [
     },
     function (session, results, next) {
         if (results.response) {
-            session.beginDialog('/query-package-luis');
+            session.replaceDialog('/query-package-luis');
         }
         else {
-            session.send("Sorry! i did not understand. Could you please provide me the channel name again?");
+            session.send("Sorry! i did not understand. Could you please provide me the channel name again 2?");
         }
     }
 ]);
@@ -189,7 +189,7 @@ bot.add("/query-package", [
         }
         else {
             session.userData.channelSearchResultsShown = false;
-            session.send("Sorry! i did not understand. Could you please provide me the channel name again?");
+            session.send("Sorry! i did not understand. Could you please provide me the channel name again 3?");
         }
     },
     function (session, results) {
@@ -486,7 +486,7 @@ dialog.on("intent-change-tv-package", [
             session.beginDialog('/query-package-luis');
         }
         else {
-            session.send("Sorry! i did not understand. Could you please provide me the channel name again?");
+            session.send("Sorry! i did not understand. Could you please provide me the channel name again 5?");
         }
     }
 
