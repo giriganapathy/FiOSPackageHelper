@@ -94,7 +94,7 @@ bot.add("/ask-user", [
         //1. Which channel do you frequently watch?
         //2. Thinking about any Premium Chanels?
         //3. Are you looking for any HD Channels?
-        builder.Prompts.choice(session, "Tell me whats in your mind?", "Thinking about any Premium Chanels?|Are you looking for any HD Channels?|Tell me your favorite channel", { listStyle: "list" });
+        builder.Prompts.choice(session, "Tell me whats in your mind?<br/>", "Thinking about any Premium Chanels?<br/>|Are you looking for any HD Channels?<br/>|Tell me your favorite channel <br/>(Type your choice number.)");
     },
     function (session, results, next) {
         if (results.response && results.response.entity) {
@@ -424,7 +424,7 @@ bot.add("/query-package", [
             }
             else {
                 delete session.userData.channelSearchResultsShown;
-                session.endDialog("Thanks 2");
+                session.endDialog("Thanks! Say 'Hi', if you want to start again...");
             }
         }
         else {
@@ -478,7 +478,7 @@ dialog.on("intent-change-tv-package", [
         }
         else {
             delete session.userData.channelSearchResultsShown;
-            session.endDialog("Thanks");
+            session.endDialog("Thanks! Say 'Hi', if you want to start again...");
         }
     },
     function (session, results, next) {
