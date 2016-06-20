@@ -50,7 +50,8 @@ bot.add("/", [
             }
             else {
                 if (session.userData.channelSearchResultsShown) {
-                    builder.Prompts.confirm(session, "Are you still looking for any specific channels in your package?");
+                    var packageInfo = "Your current TV package selection is  " + session.userData.selectedPackageName;
+                    builder.Prompts.confirm(session, packageInfo + "<br/>Are you still looking for any specific channels in your package?");
                 }
                 else {
                     next({ "response": true });
@@ -72,6 +73,7 @@ bot.add("/", [
             }
         }
         else {
+            delete session.userData.channelSearchResultsShown;
             session.endDialog("Thanks");
         }
     },
@@ -394,6 +396,7 @@ bot.add("/query-package", [
                 builder.Prompts.text(session, "Hey .. that’s cool.. Can i have the channel names which you are looking for?");
             }
             else {
+                delete session.userData.channelSearchResultsShown;
                 session.endDialog("Thanks 2");
             }
         }
@@ -447,6 +450,7 @@ dialog.on("intent-change-tv-package", [
             builder.Prompts.text(session, "Hey .. that’s cool.. Can i have the channel names which you are looking for?");
         }
         else {
+            delete session.userData.channelSearchResultsShown;
             session.endDialog("Thanks");
         }
     },
