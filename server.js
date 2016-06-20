@@ -94,7 +94,7 @@ bot.add("/ask-user", [
         //1. Which channel do you frequently watch?
         //2. Thinking about any Premium Chanels?
         //3. Are you looking for any HD Channels?
-        builder.Prompts.choice(session, "Tell me whats in your mind?", "Which channel do you frequently watch?<br/>|Thinking about any Premium Chanels?<br/>|Are you looking for any HD Channels?");
+        builder.Prompts.choice(session, "Tell me whats in your mind?", "<br/>Thinking about any Premium Chanels?|<br/>Are you looking for any HD Channels?|<br/>Tell me your favorite channel<br/>(Type your choice number)");
     },
     function (session, results, next) {
         if (results.response && results.response.entity) {
