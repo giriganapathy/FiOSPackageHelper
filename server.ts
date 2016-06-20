@@ -39,19 +39,26 @@ var bot = new builder.BotConnectorBot(); //new builder.TextBot();
 //start with waterfall...
 bot.add("/", [
     function (session, args, next) {
-        if (session.message.text.indexOf("set tv package") != -1) {
-            session.beginDialog('/query-package-luis');
-        }
-        else if (!session.userData.channelSearchResultsShown) {
-            builder.Prompts.confirm(session, "Are you looking for any specific channels in your package?");
-        }
-        else {
-            if (session.userData.channelSearchResultsShown) {
-                builder.Prompts.confirm(session, "Are you still looking for any specific channels in your package?");
+        if (session.message.text.indexOf("set tv package") == -1) {
+            if (!session.userData.channelSearchResultsShown) {
+                if (null == session.userData.selectedPackageName || session.userData.selectedPackageName.length == 0) {
+                    session.userData.selectedPackageName = fiosTVPackages["custom_tv_essentials"];
+                }
+                var packageInfo = "Your current TV package selection is  " + session.userData.selectedPackageName;
+                
+                builder.Prompts.confirm(session, packageInfo + "<br/>Are you looking for any specific channels in your package?");
             }
             else {
-                next({ "response": true });
+                if (session.userData.channelSearchResultsShown) {
+                    builder.Prompts.confirm(session, "Are you still looking for any specific channels in your package?");
+                }
+                else {
+                    next({ "response": true });
+                }
             }
+        }
+        else if(session.message.text.indexOf("set tv package") != -1) {
+            session.beginDialog('/query-package-luis');
         }
     },
     function (session, results, next) {
@@ -81,15 +88,6 @@ bot.add("/", [
 bot.add("/query-package-luis", dialog);
 bot.add("/query-package", [
     function (session, args, next) {
-        /*if (!session.userData.channelNames) {
-            if (null != session.userData.selectedPackageName) {
-                builder.DialogAction.send("Your current selection: " + session.userData.selectedPackageName);
-            }
-            builder.Prompts.text(session, "Please type the channel name...if you are looking for any specific channels?");
-        }
-        else {
-            next({ "response": session.message.text });
-        }*/
         next({ "response": session.message.text });
     },
     function (session, results, next) {
@@ -435,11 +433,32 @@ dialog.on("intent-change-tv-package", [
                 tvPackageName = tvPackageName.replace(/\s+/g, '');
                 if (session.userData.selectedPackageName != fiosTVPackages[tvPackageName]) {
                     session.userData.selectedPackageName = fiosTVPackages[tvPackageName];
-                    session.send("Your current selection: " + session.userData.selectedPackageName);
+                    //session.send("Your current selection: " + session.userData.selectedPackageName);
+
+                    var packageInfo = "Your current selection: " + session.userData.selectedPackageName;
+                    builder.Prompts.confirm(session, packageInfo + "<br/>Are you looking for any specific channels in your package?");
                 }
             }
         }
+    },
+    function (session, results, next) {
+        if (true === results.response) {
+            session.userData.channelSearchResultsShown = false;
+            builder.Prompts.text(session, "Hey .. that’s cool.. Can i have the channel names which you are looking for?");
+        }
+        else {
+            session.endDialog("Thanks");
+        }
+    },
+    function (session, results, next) {
+        if (results.response) {
+            session.beginDialog('/query-package-luis');
+        }
+        else {
+            session.send("Sorry! i did not understand. Could you please provide me the channel name again?");
+        }
     }
+
 ]);
 
 dialog.on("intent.channel", [
@@ -464,119 +483,6 @@ dialog.on("intent.channel", [
         }
     }
 ]);
-/*
-dialog.on("intent.channel", [
-    function (session, args, next) {
-        //session.userData.selectedPackageName = "Custom TV Essentials";
-        //session.send("From:" + session.message.from.channelId);
-        var entity = builder.EntityRecognizer.findEntity(args.entities, 'channel-name');
-        if (null != entity) {
-            var channelName = entity.entity;
-            if (null != channelName) {
-                session.userData.channelName = channelName;
-                var channelNameSize = channelName.length;
-                if (null != channelsAndPackageMap) {
-                    //session.send("Map Size:" + channelsAndPackageMap.
-                    var matchedChannelArr = [];
-                    //session.send("debug:" + channelsAndPackageMap["Zee TV"].description);
-                    for (var key in channelsAndPackageMap) {
-                        var searchString = "";
-                        var sourceString = "";
-                        var keySize = key.length;
-                        if (channelNameSize <= keySize) {
-                            searchString = channelName.toLowerCase();
-                            sourceString = key.toLowerCase();
-                        }
-                        else {
-                            searchString = key.toLowerCase();
-                            sourceString = channelName.toLowerCase();
-                        }
-                        if (sourceString == searchString) {
-                            matchedChannelArr.push(key);
-                        }
-                        else {
-                            var idxPos = sourceString.indexOf(searchString);
-                            if (idxPos != -1) {
-                                matchedChannelArr.push(key);
-                            }
-                        }
-                    }
-                    if (matchedChannelArr.length > 0) {
-                        var alreadyAvailableInSelectedPackageFlag = false;
-                        var channelFoundInOtherPackages = [];
-                        var packageNameInfo = "";
-                        var channelNameInfo = "";
-                        var packages = [];
-                        var length = matchedChannelArr.length;
-                        for (var idx = 0; idx < length; idx++) {
-                            channelNameInfo = matchedChannelArr[idx];
-                            var channelObj = channelsAndPackageMap[channelNameInfo];
-                            packages = channelObj.packages;
-                            if (null != packages && packages.length > 0) {
-                                for (var pkgIdx = 0; pkgIdx < packages.length; pkgIdx++) {
-                                    packageNameInfo = packages[pkgIdx];
-                                    if (packageNameInfo == session.userData.selectedPackageName) {
-                                        alreadyAvailableInSelectedPackageFlag = true;
-                                    }
-                                }
-                                channelFoundInOtherPackages.push({ "channel": channelNameInfo, "desc": channelObj.description, "packages": packages });
-                            }
-                        }
-                        var msg = "";
-                        if (alreadyAvailableInSelectedPackageFlag) {
-                            //Say the channel what you are asking is already available in your selected package.
-                            msg = "The channel you asked is already available in your selected package [ " + session.userData.selectedPackageName + " ]";
-                        }
-                        else {
-                            var channelAndPackageInfo = {};
-                            if (null != channelFoundInOtherPackages && channelFoundInOtherPackages.length > 0) {
-                                if ("directline" != session.message.from.channelId) {
-                                    //Say the channel what your asking is not available in your selected package, but it is available in other packages"
-                                    msg = "The channel what you asked is not available in your selected package [ " + session.userData.selectedPackageName + " ], but it is available in other packages:\n";
-                                    msg = "Field               | Information                             \n";
-                                    msg = msg + "--------------------| ----------------------------------------\n";
-                                    for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
-                                        channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
-                                        msg = msg + "Channel" + " | " + channelAndPackageInfo["channel"] + "\n";
-                                        msg = msg + "Description" + " | " + channelAndPackageInfo["desc"] + "\n";
-                                        msg = msg + "Packages" + " | " + channelAndPackageInfo["packages"].toString() + "\n";
-                                    }
-                                }
-                                else if ("directline" == session.message.from.channelId) {
-                                    msg = "The channel what you asked is not available in your selected package [ <span class='user-selected-package'>" + session.userData.selectedPackageName + "</span> ], but it is available in other packages:\n\n<br/>";
-                                    msg = msg + "<table><thead/><tbody>";
-                                    msg = msg + "<tr><td class='cell-field-hdr'>Field</td><td class='cell-info-hdr'>Information</td></tr>";
-                                    for (var cfpIdx = 0; cfpIdx < channelFoundInOtherPackages.length; cfpIdx++) {
-                                        channelAndPackageInfo = channelFoundInOtherPackages[cfpIdx];
-                                        msg = msg + "<tr><td class='cell-field'>Channel" + "</td><td class='cell-info'>" + channelAndPackageInfo["channel"] + "</td></tr>\n";
-                                        //msg = msg + "<tr><td class='cell-field'>Description" + "</td><td class='cell-info'>" + channelAndPackageInfo["desc"] + "</td></tr>";
-                                        msg = msg + "<tr><td class='cell-field'>Packages" + "</td><td class='cell-info'>" + channelAndPackageInfo["packages"].toString() + "</td></tr>";
-                                        msg = msg + "<tr><td class='cell-empty'></td><td class='cell-empty'></td></tr>";
-                                    }
-                                    msg = msg + "</tbody></table>";
-                                }
-                            }
-                        }
-                        session.send(msg);
-                    }
-                    else {
-                        //say sorry.
-                        session.send("Sorry! We dont have such channel in any packages...");
-                    }
-                }
-                else {
-                    session.send("Error: Package and Channel Source information is missing...");
-                }
-            }
-            else {
-                session.send("Sorry! I dont understand the channel name..Please provide more information...");
-            }
-        }
-        else {
-            session.send("Sorry! I dont understand..Please provide more information...");
-        }
-    }
-]);*/
 //bot.listenStdin();
 var server = restify.createServer();
 server.use(bot.verifyBotFramework({ appId: process.env.appId, appSecret: process.env.appSecret }));
