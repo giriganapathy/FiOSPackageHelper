@@ -94,11 +94,27 @@ bot.add("/ask-user", [
         //1. Which channel do you frequently watch?
         //2. Thinking about any Premium Chanels?
         //3. Are you looking for any HD Channels?
-        builder.Prompts.choice(session, "Tell me whats in your mind?<br/>", "Thinking about any Premium Chanels?<br/>|Are you looking for any HD Channels?<br/>|Tell me your favorite channel <br/>(Type your choice number.)");
+        builder.Prompts.choice(session, "Tell me whats in your mind?<br/>", "Thinking about any Premium Chanels?<br/>|Are you looking for any HD Channels?<br/>|Would like to check your frequently watched channels exist in your package?<br/>|I will explore the options later.(Type your choice number.)");
     },
     function (session, results, next) {
         if (results.response && results.response.entity) {
-            builder.Prompts.text(session, "Hey .. that’s cool.. Can i have the channel names which you are looking for?");
+            var userChoice = results.response.entity;
+            if (userChoice.indexOf("Thinking about any Premium Chanels") != -1) {
+                builder.Prompts.text(session, "Hey .. that’s cool.. Can i have the Premium channel names which you are looking for?");
+            }
+            else if (userChoice.indexOf("Are you looking for any HD Channels") != -1) {
+                builder.Prompts.text(session, "Hey .. that’s cool.. Can i have the HD channel names which you are looking for?");
+            }
+            else if (userChoice.indexOf("Would like to check your frequently watched channels") != -1) {
+                builder.Prompts.text(session, "Hey .. that’s cool.. Can i have your channel names which you are looking for?");
+            }
+            else if (userChoice.indexOf("I will explore the options later") != -1) {
+                delete session.userData.channelSearchResultsShown;
+                session.endDialog("Thanks! Say 'Hi', if you want to chat with me again...");
+            }
+            else {
+
+            }
         }
         else {
             //session.endDialog("Thanks");
@@ -424,7 +440,7 @@ bot.add("/query-package", [
             }
             else {
                 delete session.userData.channelSearchResultsShown;
-                session.endDialog("Thanks! Say 'Hi', if you want to start again...");
+                session.endDialog("Thanks! Say 'Hi', if you want to chat with me again...");
             }
         }
         else {
@@ -478,7 +494,7 @@ dialog.on("intent-change-tv-package", [
         }
         else {
             delete session.userData.channelSearchResultsShown;
-            session.endDialog("Thanks! Say 'Hi', if you want to start again...");
+            session.endDialog("Thanks! Say 'Hi', if you want to chat with me again...");
         }
     },
     function (session, results, next) {
