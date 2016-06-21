@@ -59,7 +59,7 @@ bot.add("/", [
             }
         }
         else if(session.message.text.indexOf("set tv package") != -1) {
-            session.beginDialog('/query-package-luis');
+            session.replaceDialog('/query-package-luis');
         }
     },
     function (session, results, next) {
